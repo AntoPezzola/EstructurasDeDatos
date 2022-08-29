@@ -153,5 +153,6 @@ elPrimero (x:_) = x
 sinElPrimero :: [a] -> [a]
 sinElPrimero (_:xs) = xs
 
-splitHead :: [a] -> (a , [a])
-splitHead 
+splitHead :: [a] -> (a, [a])  
+--PRECONDICION: la lista dada no debe estar vacía
+splitHead a = (elPrimero a, sinElPrimero a)
