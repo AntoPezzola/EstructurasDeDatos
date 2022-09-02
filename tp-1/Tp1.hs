@@ -1,7 +1,7 @@
 sucesor :: Int -> Int
 -- Dado un número devuelve su sucesor
 sucesor x = x+1 
- 
+
 sumar :: Int -> Int -> Int
 -- Dados dos números devuelve su suma utilizando la operación +.
 sumar x y = x + y
@@ -15,7 +15,9 @@ divisionYResto x y = (div x y , mod x y)
 
 maxDelPar :: (Int,Int) -> Int
 --Dado un par de números devuelve el mayor de estos.
-maxDelPar (x, y) = max x y 
+maxDelPar (x, y) =  if (x > y)
+                    then x
+                    else  y 
 
 -- TIPOS NUMERICOS
 data Dir = Este | Norte | Sur | Oeste
@@ -48,24 +50,26 @@ siguiente Oeste = Norte
 
 data DiaDeSemana = Lunes | Martes | Miercoles | Jueves | Viernes | Sabado | Domingo
     deriving Show
- 
+
 primeroYUltimoDia :: (DiaDeSemana, DiaDeSemana)
 primeroYUltimoDia = (Lunes, Domingo)
- 
+
 empiezaConM :: DiaDeSemana -> Bool
 empiezaConM Martes = True
 empiezaConM Miercoles = True
 empiezaConM d = False 
 
 vieneDespues :: DiaDeSemana -> DiaDeSemana -> Bool
-vieneDespues Lunes Martes = True
-vieneDespues Martes Miercoles = True
-vieneDespues Miercoles Jueves = True
-vieneDespues Jueves Viernes = True
-vieneDespues Viernes Sabado = True
-vieneDespues Sabado Domingo = True
-vieneDespues Domingo Lunes = True
-vieneDespues d e = False
+vieneDespues dia1 dia2 = numeroDia dia1 > numeroDia dia2
+
+numeroDia :: DiaDeSemana -> Int
+numeroDia Lunes = 1 
+numeroDia Martes = 2
+numeroDia Miercoles = 3
+numeroDia Jueves = 4 
+numeroDia Viernes = 5
+numeroDia Sabado =  6
+numeroDia Domingo = 7
 
 estaEnElMedio :: DiaDeSemana -> Bool
 estaEnElMedio Martes = True
@@ -82,20 +86,17 @@ negar True = False
 negar False = True
 
 implica :: Bool -> Bool -> Bool
-implica True True = True
-implica True False = False
-implica False False = True
-implica False True = True
+implica True a = a
+implica _ _ = True
 
 yTambien :: Bool -> Bool -> Bool
-yTambien True True = True
-yTambien d e = False
+yTambien True e = e
+yTambien False _ = False
 
 oBien :: Bool -> Bool -> Bool
-oBien True False = True
-oBien True True = True
-oBien False True = True
-oBien d e = False
+oBien False a = a
+oBien _ _ = True
+
 
 
 -- REGISTROS--
