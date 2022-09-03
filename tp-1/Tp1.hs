@@ -15,7 +15,7 @@ divisionYResto x y = (div x y , mod x y)
 
 maxDelPar :: (Int,Int) -> Int
 --Dado un par de números devuelve el mayor de estos.
-maxDelPar (x, y) =  if (x > y)
+maxDelPar (x, y) =  if x > y
                     then x
                     else  y 
 
@@ -36,6 +36,7 @@ iguales Este Este = True
 iguales Sur Sur = True
 iguales Norte Norte = True
 iguales Oeste Oeste = True
+iguales _ _ = False
 
 -------
 
