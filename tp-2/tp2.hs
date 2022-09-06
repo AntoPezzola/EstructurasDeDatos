@@ -59,3 +59,81 @@ agregar (x:xs) ys = x : agregar xs ys
 reversa :: [a] -> [a]
 reversa [] = []
 reversa (x:xs) = agregarAlFinal xs x 
+
+elMinimo :: Ord a => [a] -> a
+elMinimo []  = 0
+elMinimo (x:xs) = if x < elMinimo xs
+                    then x
+                    else elMinimo xs
+
+
+-- RECURSION SOBRE NUMEROS --
+
+factorial :: Int -> Int
+-- Precond n es positivo
+factorial 0 = 1
+factorial n = n * factorial (n-1)
+
+cuentaRegresiva :: Int -> [Int]
+cuentaRegresiva 0 = []
+cuentaRegresiva n = n : cuentaRegresiva (n-1)
+
+repetir :: Int -> a -> [a]
+repetir 0 _ = []
+repetir n x = x : repetir (n-1) x 
+
+losPrimeros :: Int -> [a] -> [a]
+losPrimeros _ [] = []
+losPrimeros 0 _ = []
+losPrimeros n (x:xs) = x : losPrimeros (n-1) xs 
+-- x es mi primer elemento, y lo agrego a la lista que resta 
+
+ sinLosPrimeros :: Int -> [a] -> [a] 
+ sinLosPrimeros n xs = xs -- Si tengo 0, y una lista devuelvo esa lista
+ sinlosPrimeros _ [] = []
+ sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs
+
+
+-- REGISTROS 
+
+data Persona = P String Int 
+   deriving Show
+
+nombre :: Persona -> String
+nombre (P n e) = n
+
+edad :: Persona -> Int
+edad (P n e) = e
+
+mayoresA :: Int -> [Persona] -> [Persona]
+-- Precond n es mayor a 0
+mayoresA _ [] = []
+mayoresA n (p:ps) = if edad p > n
+                    then p : mayoresA n ps
+                    else mayoresA n ps -- Descarto la primer persona, pq no cumple la condicion
+
+promedioEdad :: [Persona] -> Int
+-- Precond la lista posee al menos una persona
+promedioEdad ps = div (sumarEdades ps) (longitud ps)
+                    
+sumarEdades :: [Persona] -> Int 
+sumarEdades [] = 0
+sumarEdades (p:ps) = edad p + sumarEdades ps 
+                    -- Ya pido la edad, edad p
+
+elMasViejo :: [Persona] -> Persona
+-- Precond la lista posee al menos una persona
+elMasViejo (p:ps) = if edad p > elMasViejo ps
+                    then p
+                    else elMasViejo ps
+
+
+data TipoDePokemon = Agua | Fuego | Planta
+data Pokemon = ConsPokemon TipoDePokemon Int
+data Entrenador = ConsEntrenador String [Pokemon]
+
+cantPokemon :: Entrenador -> Int
+cantPokemon (ConsEntrenador _ p) = longitud p
+
+
+
