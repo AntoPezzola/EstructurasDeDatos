@@ -125,8 +125,15 @@ laQueEsMayor (P n1 e1) (P n2 e2) = if( e1 > e2)
                                     then (P n1 e1)
                                     else (P n2 e2)
 
--- FALTA POKEMONES ---
 
+superaA :: Pokemon -> Pokemon -> Bool
+superaA (Pkmn t e) (Pkmn t1 e1) =  primeroSuperaASegundo t t1
+
+primeroSuperaASegundo:: TipoDePokemon -> TipoDePokemon -> Bool
+primeroSuperaASegundo Agua Fuego = True
+primeroSuperaASegundo Fuego Planta = True
+primeroSuperaASegundo Planta Agua = True
+primeroSuperaASegundo t1 t2 = False
 
 -- FUNCIONES POLIMORFICAS -- 
 
