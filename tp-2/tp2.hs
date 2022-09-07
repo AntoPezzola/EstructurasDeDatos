@@ -61,7 +61,8 @@ reversa [] = []
 reversa (x:xs) = agregarAlFinal xs x 
 
 elMinimo :: Ord a => [a] -> a
-elMinimo []  = 0
+elMinimo    []     = error "la lista no puede ser vacia"
+elMinimo (x:[]) = x
 elMinimo (x:xs) = if x < elMinimo xs
                     then x
                     else elMinimo xs
@@ -88,10 +89,10 @@ losPrimeros 0 _ = []
 losPrimeros n (x:xs) = x : losPrimeros (n-1) xs 
 -- x es mi primer elemento, y lo agrego a la lista que resta 
 
- sinLosPrimeros :: Int -> [a] -> [a] 
- sinLosPrimeros n xs = xs -- Si tengo 0, y una lista devuelvo esa lista
- sinlosPrimeros _ [] = []
- sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs
+sinLosPrimeros :: Int -> [a] -> [a] 
+--sinLosPrimeros 0  (x:xs) = xs -- Si tengo 0, y una lista devuelvo esa lista
+sinlosPrimeros _ []     = []
+sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs
 
 
 -- REGISTROS 
@@ -123,17 +124,58 @@ sumarEdades (p:ps) = edad p + sumarEdades ps
 
 elMasViejo :: [Persona] -> Persona
 -- Precond la lista posee al menos una persona
-elMasViejo (p:ps) = if edad p > elMasViejo ps
+elMasViejo (p:ps) = if edad p > edad (elMasViejo ps)
                     then p
                     else elMasViejo ps
 
 
 data TipoDePokemon = Agua | Fuego | Planta
+  deriving Show
 data Pokemon = ConsPokemon TipoDePokemon Int
+  deriving Show
 data Entrenador = ConsEntrenador String [Pokemon]
+  deriving Show
+
+sonDelMismoTipo :: TipoDePokemon -> TipoDePokemon -> Bool                                               
+sonDelMismoTipo Fuego Fuego = True
+sonDelMismoTipo Planta Planta = True
+sonDelMismoTipo Agua Agua = True
+sonDelMismoTipo _ _ = False
+
+tipoDePokemon :: Pokemon -> TipoDePokemon
+tipoDePokemon (ConsPokemon t _) = t 
 
 cantPokemon :: Entrenador -> Int
 cantPokemon (ConsEntrenador _ p) = longitud p
 
+cantPokemonDe :: TipoDePokemon -> Entrenador -> Int
+cantPokemonDe tp (ConsEntrenador _ pks) = cantPokemonsDeTipo tp pks
+
+cantPokemonsDeTipo :: TipoDePokemon -> [Pokemon] -> Int
+cantPokemonsDeTipo t (p:ps)  = if sonDelMismoTipo t tipoDePokemon p 
+                               then 1 + cantPokemonDe t (ConsEntrenador _ ps) -- error
+                               else cantPokemonDe t (ConsEntrenador _ ps) 
+
+losQueLeGanan :: TipoDePokemon -> Entrenador -> Entrenador -> Int
+losQueLeGanan tp entrenador1 entrenador2 = 
+    lesGanan (delMismoTipo tp entrenador1) (pokemones entrenador2)
+
+delMismoTipo :: TipoDePokemon -> Entrenador -> [Pokemon]
+delMismoTipo tp (ConsEntrenador n (pk:pks)) = if (sonDelMismoTipo tp pk)
+                                              then pk : delMismoTipo tp (ConsEntrenador n pks)
+                                              else delMismoTipo tp (ConsEntrenador n pks)
 
 
+esMaestroPokemon :: Entrenador -> Bool
+esMaestroPokemon (ConsEntrenador _ pks) = tienePokemonesDeTodosLosTipos pks
+
+tienePokemonesDeTodosLosTipos :: [Pokemon] -> Bool
+tienePokemonesDeTodosLosTipos [] = False
+tienePokemonesDeTodosLosTipos (pks) =  hayUnPokemonDeTipo pks Agua &&
+                                         hayUnPokemonDeTipo pks Fuego &&
+                                         hayUnPokemonDeTipo pks Planta
+
+hayUnPokemonDeTipo :: [Pokemon] -> TipoDePokemon -> Bool
+hayUnPokemonDeTipo [] _ = False
+hayUnPokemonDeTipo (pk:pks) tp =  sonDelMismoTipo pk tp || hayUnPokemonDeTipo pks tp  
+                            -- sigo con la recursion porque mi primer pk no cumple la cond 
