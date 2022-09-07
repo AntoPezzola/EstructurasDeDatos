@@ -20,7 +20,7 @@ disyuncion (b:bs) = b || disyuncion bs
 
 aplanar :: [[a]] -> [a]
 aplanar [] = []
-aplanar (a:as) = a ++ aplanar as
+aplanar (xs:xss) = xs ++ aplanar xss
 
 pertenece :: Eq a => a -> [a] -> Bool
 pertenece a [] = False
@@ -58,7 +58,8 @@ agregar (x:xs) ys = x : agregar xs ys
 
 reversa :: [a] -> [a]
 reversa [] = []
-reversa (x:xs) = agregarAlFinal xs x 
+reversa (x:xs) = agregarAlFinal (reversa xs) x 
+
 
 elMinimo :: Ord a => [a] -> a
 elMinimo    []     = error "la lista no puede ser vacia"
@@ -89,11 +90,13 @@ losPrimeros 0 _ = []
 losPrimeros n (x:xs) = x : losPrimeros (n-1) xs 
 -- x es mi primer elemento, y lo agrego a la lista que resta 
 
+
+{-
 sinLosPrimeros :: Int -> [a] -> [a] 
---sinLosPrimeros 0  (x:xs) = xs -- Si tengo 0, y una lista devuelvo esa lista
+sinLosPrimeros 0  (x:xs) = xs -- Si tengo 0, y una lista devuelvo esa lista
 sinlosPrimeros _ []     = []
 sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs
-
+-}
 
 -- REGISTROS 
 
@@ -152,13 +155,10 @@ cantPokemonDe :: TipoDePokemon -> Entrenador -> Int
 cantPokemonDe tp (ConsEntrenador _ pks) = cantPokemonsDeTipo tp pks
 
 cantPokemonsDeTipo :: TipoDePokemon -> [Pokemon] -> Int
-cantPokemonsDeTipo t (p:ps)  = if sonDelMismoTipo t tipoDePokemon p 
-                               then 1 + cantPokemonDe t (ConsEntrenador _ ps) -- error
-                               else cantPokemonDe t (ConsEntrenador _ ps) 
+cantPokemonsDeTipo t (p:ps)  = if sonDelMismoTipo t (tipoDePokemon p) 
+                               then 1 + cantPokemonDe t ps
+                               else cantPokemonDe t ps
 
-losQueLeGanan :: TipoDePokemon -> Entrenador -> Entrenador -> Int
-losQueLeGanan tp entrenador1 entrenador2 = 
-    lesGanan (delMismoTipo tp entrenador1) (pokemones entrenador2)
 
 delMismoTipo :: TipoDePokemon -> Entrenador -> [Pokemon]
 delMismoTipo tp (ConsEntrenador n (pk:pks)) = if (sonDelMismoTipo tp pk)
