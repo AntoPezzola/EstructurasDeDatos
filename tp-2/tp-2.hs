@@ -91,12 +91,9 @@ losPrimeros n (x:xs) = x : losPrimeros (n-1) xs
 -- x es mi primer elemento, y lo agrego a la lista que resta 
 
 
-{-
 sinLosPrimeros :: Int -> [a] -> [a] 
-sinLosPrimeros 0  (x:xs) = xs -- Si tengo 0, y una lista devuelvo esa lista
-sinlosPrimeros _ []     = []
+sinLosPrimeros 0  ls = ls -- Si tengo 0, y una lista devuelvo esa lista
 sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs
--}
 
 -- REGISTROS 
 
@@ -155,27 +152,37 @@ cantPokemonDe :: TipoDePokemon -> Entrenador -> Int
 cantPokemonDe tp (ConsEntrenador _ pks) = cantPokemonsDeTipo tp pks
 
 cantPokemonsDeTipo :: TipoDePokemon -> [Pokemon] -> Int
+cantPokemonsDeTipo t [] = 0
 cantPokemonsDeTipo t (p:ps)  = if sonDelMismoTipo t (tipoDePokemon p) 
-                               then 1 + cantPokemonDe t ps
-                               else cantPokemonDe t ps
+                               then 1 + cantPokemonsDeTipo t ps
+                               else cantPokemonsDeTipo t ps
+
+superaA :: Pokemon -> Pokemon -> Bool
+superaA (ConsPokemon Agua _)  (ConsPokemon Fuego _) = True
+superaA (ConsPokemon Fuego _)  (ConsPokemon Planta _) = True
+superaA (ConsPokemon Planta _)  (ConsPokemon Agua _) = True
+superaA (ConsPokemon _ _)  (ConsPokemon _ _) = False
+
+losQueLeGanan :: TipoDePokemon -> Entrenador -> Entrenador -> Int
+losQueLeGanan t (ConsEntrenador _ []) (ConsEntrenador _ _) = 0 --cuando la lista de pokemones del primer entrenador llegue a estar vacía
+losQueLeGanan t (ConsEntrenador _ (pk1:pks1)) (ConsEntrenador _ pks2) =
+  if (leGanaATodos pk1 pks2) 
+    then 1 + (losQueLeGanan t (ConsEntrenador _ pks1) (ConsEntrenador _ pks2))
+    else (losQueLeGanan t (ConsEntrenador _ pks1) (ConsEntrenador _ pks2))
 
 
-delMismoTipo :: TipoDePokemon -> Entrenador -> [Pokemon]
-delMismoTipo tp (ConsEntrenador n (pk:pks)) = if (sonDelMismoTipo tp pk)
-                                              then pk : delMismoTipo tp (ConsEntrenador n pks)
-                                              else delMismoTipo tp (ConsEntrenador n pks)
+leGanaATodos :: Pokemon -> [Pokemon] -> Bool
+leGanaATodos pk1 [] = True -- CASO BORDE 
+leGanaATodos pk1 (pk2:pks2) = (superaA pk1 pk2) -- el pokemon recibido le gana al primero de la lista
+                              && (leGanaATodos pk1 pks2)
 
-
-esMaestroPokemon :: Entrenador -> Bool
-esMaestroPokemon (ConsEntrenador _ pks) = tienePokemonesDeTodosLosTipos pks
-
-tienePokemonesDeTodosLosTipos :: [Pokemon] -> Bool
-tienePokemonesDeTodosLosTipos [] = False
-tienePokemonesDeTodosLosTipos (pks) =  hayUnPokemonDeTipo pks Agua &&
-                                         hayUnPokemonDeTipo pks Fuego &&
-                                         hayUnPokemonDeTipo pks Planta
+esMaestroPokemon :: Entrenador -> Bool 
+esMaestroPokemon [] = False
+esMaestroPokemon  (ConsEntrenador _ pks) = hayUnPokemonDeTipo pks Agua && 
+                                          hayUnPokemonDeTipo pks Planta && 
+                                          hayUnPokemonDeTipo pks Fuego
 
 hayUnPokemonDeTipo :: [Pokemon] -> TipoDePokemon -> Bool
 hayUnPokemonDeTipo [] _ = False
-hayUnPokemonDeTipo (pk:pks) tp =  sonDelMismoTipo pk tp || hayUnPokemonDeTipo pks tp  
+hayUnPokemonDeTipo (pk:pks) tp =  sonDelMismoTipo (tipoDePokemon pk) tp || hayUnPokemonDeTipo pks tp  
                             -- sigo con la recursion porque mi primer pk no cumple la cond 
