@@ -125,6 +125,12 @@ laQueEsMayor (P n1 e1) (P n2 e2) = if( e1 > e2)
                                     then (P n1 e1)
                                     else (P n2 e2)
 
+data Pokemon = P TipoDePokemon Int
+        deriving Show
+data Entrenador = E String Pokemon Pokemon
+        deriving Show
+data TipoDePokemon = Agua | Fuego | Planta
+  deriving Show
 
 superaA :: Pokemon -> Pokemon -> Bool
 superaA (Pkmn t e) (Pkmn t1 e1) =  primeroSuperaASegundo t t1
@@ -134,6 +140,9 @@ primeroSuperaASegundo Agua Fuego = True
 primeroSuperaASegundo Fuego Planta = True
 primeroSuperaASegundo Planta Agua = True
 primeroSuperaASegundo t1 t2 = False
+
+juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
+juntarPokemon (E _ Pk1 Pk2) (E _ Pk1 Pk2) =  juntarPokemon (E _ Pk1 Pk2) (E _ Pk1 Pk2)
 
 -- FUNCIONES POLIMORFICAS -- 
 
