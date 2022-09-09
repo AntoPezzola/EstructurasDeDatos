@@ -125,6 +125,7 @@ laQueEsMayor (P n1 e1) (P n2 e2) = if( e1 > e2)
                                     then (P n1 e1)
                                     else (P n2 e2)
 
+                                    
 data Pokemon = P TipoDePokemon Int
         deriving Show
 data Entrenador = E String Pokemon Pokemon
