@@ -93,6 +93,7 @@ losPrimeros n (x:xs) = x : losPrimeros (n-1) xs
 
 sinLosPrimeros :: Int -> [a] -> [a] 
 sinLosPrimeros 0  ls = ls -- Si tengo 0, y una lista devuelvo esa lista
+sinLosPrimeros _ [] = []
 sinLosPrimeros n (x:xs) = sinLosPrimeros (n-1) xs
 
 -- REGISTROS 
