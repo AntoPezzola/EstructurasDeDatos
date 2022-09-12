@@ -154,9 +154,12 @@ cantPokemonDe tp (ConsEntrenador _ pks) = cantPokemonsDeTipo tp pks
 
 cantPokemonsDeTipo :: TipoDePokemon -> [Pokemon] -> Int
 cantPokemonsDeTipo t [] = 0
-cantPokemonsDeTipo t (p:ps)  = if sonDelMismoTipo t (tipoDePokemon p) 
-                               then 1 + cantPokemonsDeTipo t ps
-                               else cantPokemonsDeTipo t ps
+cantPokemonsDeTipo t (p:ps)  = unoSi (sonDelMismoTipo t (tipoDePokemon p)) + cantPokemonsDeTipo t ps
+                             
+unoSi :: Bool -> Int
+unoSi True  = 1
+unoSi False = 0
+-- unoSi b = if b then 1 else 0
 
 superaA :: Pokemon -> Pokemon -> Bool
 superaA (ConsPokemon Agua _)  (ConsPokemon Fuego _) = True
@@ -166,11 +169,10 @@ superaA (ConsPokemon _ _)  (ConsPokemon _ _) = False
 
 losQueLeGanan :: TipoDePokemon -> Entrenador -> Entrenador -> Int
 losQueLeGanan t (ConsEntrenador _ []) (ConsEntrenador _ _) = 0 --cuando la lista de pokemones del primer entrenador llegue a estar vacía
-losQueLeGanan t (ConsEntrenador _ (pk1:pks1)) (ConsEntrenador _ pks2) =
-  if (leGanaATodos pk1 pks2) 
-    then 1 + (losQueLeGanan t (ConsEntrenador _ pks1) (ConsEntrenador _ pks2))
-    else (losQueLeGanan t (ConsEntrenador _ pks1) (ConsEntrenador _ pks2))
-
+losQueLeGanan t (ConsEntrenador _ (pk1:pks1)) (ConsEntrenador _ pks2) = unoSi (leGanaATodos pk1 pks2)
+                                                                     + losQueLeGanan (t (ConsEntrenador _ (pk1:pks1))
+                                                                                       (ConsEntrenador _ pks2))
+    
 
 leGanaATodos :: Pokemon -> [Pokemon] -> Bool
 leGanaATodos pk1 [] = True -- CASO BORDE 
