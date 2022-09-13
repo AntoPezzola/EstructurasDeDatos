@@ -22,5 +22,25 @@ celda4 = Bolita Azul (Bolita Rojo  CeldaVacia)
 
 
 poner :: Color -> Celda -> Celda
-poner color CeldaVacia = CeldaVacia
-poner color (Bolita co ce) = Bolita co (Bolita color(poner color ce))
+poner color celda =  Bolita color celda
+
+sacar :: Color -> Celda -> Celda
+sacar _ CeldaVacia = CeldaVacia
+sacar color (Bolita co ce) = if esDeColor color
+                             then ce
+                             else sacar co ce -- duda
+
+ponerN :: Int -> Color -> Celda -> Celda
+ponerN  0 color celda = celda
+ponnerN n color celda = Bolita color(ponerN (n-1) color celda)  
+
+--- Camino hacia el tesoro ---
+
+data Objeto = Cacharro | Tesoro
+data Camino = Fin | Cofre [Objeto] Camino | Nada Camino
+
+
+hayTesoro :: Camino -> Bool
+hayTesoro  fin = ...
+hayTesoro nada camino = ...
+hayTesoro 
