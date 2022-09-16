@@ -109,3 +109,52 @@ leaves :: Tree a -> [a]
 leaves EmptyT = []
 leaves (NodeT x x1 x2) = x : (leaves x1 ++ leaves x2)
 
+mapDobleT :: Tree Integer -> Tree Integer
+mapDobleT EmptyT = EmptyT
+mapDobleT (NodeT a a1 a2) = (NodeT (a*2) (mapDobleT a1) (mapDobleT a2))
+
+perteneceT :: Eq a => a -> Tree a -> Bool
+perteneceT x EmptyT = False
+perteneceT x (NodeT a a1 a2) = x == a || perteneceT x a1 || perteneceT x a2
+
+heightT :: Tree a -> Int
+heightT EmptyT = 0
+heightT (NodeT a a1 a2) =  -- duda
+
+
+mirrorT :: Tree a -> Tree a
+mirrorT EmptyT = EmptyT 
+mirrorT (NodeT a a1 a2) = (NodeT a (mirrorT a2) (mirrorT a1)) 
+
+toList :: Tree a -> [a]
+toList EmptyT = []
+toList (NodeT a a1 a2) = (toList a1) ++ [a] ++ (toList a2) 
+
+levelN :: Int -> Tree a -> [a]
+levelN n EmptyT          = []
+levelN 0 (NodeT a a1 a2) = [a]
+levelN n (NodeT a a1 a2) =  (levelN (n-1) a1) ++ (levelN (n-1) a2)
+
+listPerLevel :: Tree a -> [[a]]
+listPerLevel EmptyT = []
+listPerLevel (NodeT a a1 a2) = [a] : unirNiveles (listPerLevel a1) (listPerLevel a2)
+
+unirNiveles :: [[a]] -> [[a]] -> [[a]]
+unirNiveles [] xss = xss
+unirNiveles yss [] = yss
+unirNiveles (xs:xss) (ys:yss) = (xs ++ ys) : unirNiveles xss yss 
+                        -- los elementos son listas, los uno 
+
+ramaMasLarga :: Tree a -> [a]
+ramaMasLarga EmptyT = []
+ramaMasLarga (NodeT a a1 a2) = a : elegirLaRamaMasLarga(ramaMasLarga a1) (ramaMasLarga a2)
+
+elegirLaRamaMasLarga :: [a] -> [a] -> [a]
+elegirLaRamaMasLarga _ x = x
+elegirLaRamaMasLarga y _ = y
+elegirLaRamaMasLarga (x:xs) (y:ys) = if length xs > length ys
+                                    then x:xs
+                                    else y:ys
+
+
+ -- data maybe = Just un elemento m da el tipo
