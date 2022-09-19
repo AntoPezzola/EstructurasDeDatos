@@ -33,6 +33,14 @@ esJamon :: Ingrediente -> Bool
 esJamon i    = True
 esJamon  _    = False
 
+tieneSoloSalsaYQueso :: Pizza -> Bool
+tieneSoloSalsaYQueso Prepizza = True -- duda con el caso borde
+tieneSoloSalsaYQueso (Capa ing pi) = esQuesoOSalsa ing && tieneSoloSalsaYQueso pi
+
+esQuesoOSalsa :: Ingrediente -> Bool
+esQuesoOSalsa Salsa = True
+esQuesoOSalsa Queso = True
+esQuesoOSalsa _     = False
 
 duplicarAceitunas :: Pizza -> Pizza
 duplicarAceitunas   Prepizza = Prepizza
@@ -41,4 +49,4 @@ duplicarAceitunas (Capa i p) = if esAceituna i
                               else Capa i(duplicarAceitunas p)
 
 esAceituna :: Ingrediente -> Bool
-esAceituna i = True
+esAceituna i  = True 
