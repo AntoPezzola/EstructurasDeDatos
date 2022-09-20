@@ -27,14 +27,14 @@ sacarJamon :: Pizza -> Pizza
 sacarJamon Prepizza       = Prepizza
 sacarJamon (Capa i pi) =    if esJamon i
                             then sacarJamon pi  
-                            else Capa i (sacarJamon pi) -- duda
+                            else Capa i (sacarJamon pi)
 
 esJamon :: Ingrediente -> Bool
-esJamon i    = True
+esJamon  Jamon = True
 esJamon  _    = False
 
 tieneSoloSalsaYQueso :: Pizza -> Bool
-tieneSoloSalsaYQueso Prepizza = True -- duda con el caso borde
+tieneSoloSalsaYQueso Prepizza = True e
 tieneSoloSalsaYQueso (Capa ing pi) = esQuesoOSalsa ing && tieneSoloSalsaYQueso pi
 
 esQuesoOSalsa :: Ingrediente -> Bool
