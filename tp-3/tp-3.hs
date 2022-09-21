@@ -164,6 +164,16 @@ elegirLaRamaMasLarga (x:xs) (y:ys) = if length xs > length ys
                                     then x:xs
                                     else y:ys
 
+todosLosCaminos :: Tree a -> [[a]]
+todosLosCaminos EmptyT          = []
+todosLosCaminos (NodeT e EmptyT EmptyT) = [[e]]
+todosLosCaminos (NodeT e t1 t2) = (agregarElemento e (todosLosCaminos t1)) ++
+                                         (agregarElemento e (todosLosCaminos t2))
+
+agregarElemento :: a -> [[a]] ->[[a]]
+agregarElemento e [] = []
+agregarElemento e (x:xs) = (e : x) : agregarElemento e xs
+
 
  -- data maybe = Just un elemento m da el tipo
 
