@@ -149,17 +149,21 @@ primeroSuperaASegundo t1 t2 = False
 
 cantidadDePokemonDe :: TipoPokemon -> Entrenador -> Int
 cantidadDePokemonDe tp (E _ pk1 pk2) = 
-    (unoSi tp (tipoPokemon pk1)) + (unoSi tp (tipoPokemon pk2))
+    unoSi (esDelMismoTipo tp (tipoPokemon pk1)) + unoSi (esDelMismoTipo tp (tipoPokemon pk2)) 
 
+esDelMismoTipo :: TipoPokemon -> TipoPokemon -> Bool
+esDelMismoTipo Agua Agua     = True
+esDelMismoTipo Fuego Fuego   = True
+esDelMismoTipo Planta Planta = True
+esDelMismoTipo   _     _     = False
 
-unoSi :: TipoPokemon -> TipoPokemon -> Int
-unoSi Agua Agua = 1
-unoSi Fuego Fuego = 1
-unoSi Planta Planta = 1
-unoSi tp1 tp2 = 0
 
 tipoPokemon :: Pokemon -> TipoPokemon
 tipoPokemon (Pkmn t _) = t
+
+unoSi :: Bool ->  Int
+unoSi True = 1
+unoSi False = 0
 
 
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
