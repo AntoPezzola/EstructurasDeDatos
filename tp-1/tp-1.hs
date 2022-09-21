@@ -126,24 +126,44 @@ laQueEsMayor (P n1 e1) (P n2 e2) = if( e1 > e2)
                                     else (P n2 e2)
 
                                     
-data Pokemon = P TipoDePokemon Int
-        deriving Show
-data Entrenador = E String Pokemon Pokemon
-        deriving Show
-data TipoDePokemon = Agua | Fuego | Planta
-  deriving Show
+data Pokemon = Pkmn TipoPokemon Energia  
+    deriving Show
+
+data TipoPokemon = Agua | Fuego | Planta
+    deriving Show
+
+data Energia = Int
+    deriving Show
+
+data Entrenador = E String Pokemon Pokemon 
+    deriving Show 
 
 superaA :: Pokemon -> Pokemon -> Bool
 superaA (Pkmn t e) (Pkmn t1 e1) =  primeroSuperaASegundo t t1
 
-primeroSuperaASegundo:: TipoDePokemon -> TipoDePokemon -> Bool
+primeroSuperaASegundo:: TipoPokemon -> TipoPokemon -> Bool
 primeroSuperaASegundo Agua Fuego = True
 primeroSuperaASegundo Fuego Planta = True
 primeroSuperaASegundo Planta Agua = True
 primeroSuperaASegundo t1 t2 = False
 
+cantidadDePokemonDe :: TipoPokemon -> Entrenador -> Int
+cantidadDePokemonDe tp (E _ pk1 pk2) = 
+    (unoSi tp (TipoPokemon pk1)) + (unoSi tp (tipoPokemon pk2))
+
+
+unoSi :: TipoPokemon -> TipoPokemon -> Int
+unoSi Agua Agua = 1
+unoSi Fuego Fuego = 1
+unoSi Planta Planta = 1
+unoSi tp1 tp2 = 0
+
+tipoPokemon :: Pokemon -> TipoPokemon
+tipoPokemon (Pkmn t _) = t
+
+
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
-juntarPokemon (E _ Pk1 Pk2) (E _ Pk1 Pk2) =  juntarPokemon (E _ Pk1 Pk2) (E _ Pk1 Pk2)
+juntarPokemon ((E _ pk1 pk2), (E _ pk3 pk4)) = [pk1, pk2, pk3, pk4]
 
 -- FUNCIONES POLIMORFICAS -- 
 
