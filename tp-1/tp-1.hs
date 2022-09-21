@@ -170,7 +170,7 @@ juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
 juntarPokemon (ent1,ent2)= pokemonesDelEntrenador ent1 : pokemonesDelEntrenador ent2
 
 pokemonesDelEntrenador :: Entrenador -> [Pokemon]
-pokemonesDelEntrenador (E _ pk1 pk2) = pk1:pk2 : []
+pokemonesDelEntrenador (E _ pk1 pk2) = pk1 ++ pk2 
 
 -- FUNCIONES POLIMORFICAS -- 
 
