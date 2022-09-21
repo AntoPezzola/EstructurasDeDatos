@@ -149,7 +149,7 @@ primeroSuperaASegundo t1 t2 = False
 
 cantidadDePokemonDe :: TipoPokemon -> Entrenador -> Int
 cantidadDePokemonDe tp (E _ pk1 pk2) = 
-    (unoSi tp (TipoPokemon pk1)) + (unoSi tp (tipoPokemon pk2))
+    (unoSi tp (tipoPokemon pk1)) + (unoSi tp (tipoPokemon pk2))
 
 
 unoSi :: TipoPokemon -> TipoPokemon -> Int
@@ -163,7 +163,10 @@ tipoPokemon (Pkmn t _) = t
 
 
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
-juntarPokemon ((E _ pk1 pk2), (E _ pk3 pk4)) = [pk1, pk2, pk3, pk4]
+juntarPokemon (ent1,ent2)= pokemonesDelEntrenador ent1 : pokemonesDelEntrenador ent2
+
+pokemonesDelEntrenador :: Entrenador -> [Pokemon]
+pokemonesDelEntrenador (E _ pk1 pk2) = pk1:pk2 : []
 
 -- FUNCIONES POLIMORFICAS -- 
 
