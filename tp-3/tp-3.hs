@@ -26,9 +26,14 @@ poner color celda =  Bolita color celda
 
 sacar :: Color -> Celda -> Celda
 sacar _ CeldaVacia = CeldaVacia
-sacar color (Bolita co ce) = if esDeColor color
-                             then Bolita(sacar co ce)
-                             else Bolita co (sacar color ce) 
+sacar color (Bolita co ce) = if esElMismoColor color co
+                             then  ce
+                             else Bolita co (sacar color ce)
+
+esElMismoColor :: Color -> Color -> Bool
+esElMismoColor  Azul Azul = True
+esElMismoColor  Rojo Rojo = True
+esElMismoColor   _     _  = False 
 
 ponerN :: Int -> Color -> Celda -> Celda
 ponerN  0 color celda = celda
