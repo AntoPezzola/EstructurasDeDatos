@@ -27,8 +27,8 @@ poner color celda =  Bolita color celda
 sacar :: Color -> Celda -> Celda
 sacar _ CeldaVacia = CeldaVacia
 sacar color (Bolita co ce) = if esDeColor color
-                             then ce
-                             else sacar color ce -- duda
+                             then Bolita(sacar co ce)
+                             else Bolita co (sacar color ce) 
 
 ponerN :: Int -> Color -> Celda -> Celda
 ponerN  0 color celda = celda
@@ -91,6 +91,9 @@ alMenosNTesoros (Cofre objs c) = if tieneTesoro objs
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
             deriving Show
 
+
+arbol1 = NodeT 1 (NodeT 1 ) (NodeT 1) 
+
 sumarT :: Tree Int -> Int
 sumarT  EmptyT = 0
 sumarT  (NodeT n n1 n2) = n + sumarT n1 + sumarT n2 
@@ -107,7 +110,17 @@ aparicionesT x (NodeT a a1 a2) = if (x == a)
 
 leaves :: Tree a -> [a]
 leaves EmptyT = []
-leaves (NodeT x x1 x2) = x : (leaves x1 ++ leaves x2)
+leaves (NodeT e t1 t2) = if (esUnaHoja t1) && ( esUnaHoja t2 )
+                         then e : leaves t1 ++ leaves t2
+                         else leaves t1 ++ leaves t2
+
+esUnaHoja :: Tree a -> Bool
+esUnaHoja EmptyT = True
+esUnaHoja   _    = False
+
+heighT :: Tree a -> Int
+heighT EmptyT = 0
+heighT (NodeT e t1 t2) = 1 + max (heighT t1) (heighT t2)
 
 mapDobleT :: Tree Integer -> Tree Integer
 mapDobleT EmptyT = EmptyT
@@ -116,11 +129,6 @@ mapDobleT (NodeT a a1 a2) = (NodeT (a*2) (mapDobleT a1) (mapDobleT a2))
 perteneceT :: Eq a => a -> Tree a -> Bool
 perteneceT x EmptyT = False
 perteneceT x (NodeT a a1 a2) = x == a || perteneceT x a1 || perteneceT x a2
-
-heightT :: Tree a -> Int
-heightT EmptyT = 0
-heightT (NodeT a a1 a2) =  -- duda
-
 
 mirrorT :: Tree a -> Tree a
 mirrorT EmptyT = EmptyT 
@@ -158,3 +166,12 @@ elegirLaRamaMasLarga (x:xs) (y:ys) = if length xs > length ys
 
 
  -- data maybe = Just un elemento m da el tipo
+
+ data ExpA = Valor Int  | Sum ExpA ExpA | Prod ExpA ExpA | Neg ExpA
+                deriving Show
+
+eval :: ExpA -> Int
+eval Valor n       = n
+eval (Sum e2 e1 )  = (eval e2) + (eval e1)
+eval (Prod e1 e2 ) = (eval e1) * (eval e2)
+eval (Neg e1)      = - (eval e1)
