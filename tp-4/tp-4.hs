@@ -61,3 +61,56 @@ cantCapasPorPizza :: [Pizza] -> [(Int, Pizza)]
 cantCapasPorPizza  []     = []
 cantCapasPorPizza  (p:ps) =  (cantidadDeCapas p,p) : cantCapasPorPizza ps
                                                -- devuelvo el int y la pizza
+                                               
+ data Dir = Izq | Der
+    deriving Show
+data Objeto = Tesoro | Chatarra
+    deriving Show
+data Cofre = Cofre [Objeto]
+    deriving Show
+data Mapa = Fin Cofre | Bifurcacion Cofre Mapa Mapa
+    deriving Show
+
+cofre1 = Cofre [Chatarra, Chatarra, Tesoro] 
+
+cofre2 = Cofre [Chatarra, Chatarra, Tesoro]
+
+cofre3 = Cofre [Tesoro,Chatarra, Chatarra, Chatarra, Tesoro]
+
+cofre5 = Cofre []
+
+mapa1 = Fin cofre1
+mapa2 = Fin cofre2
+
+mapa3 = Bifurcacion cofre3 mapa1 mapa2
+
+mapa4 = Bifurcacion cofre5 mapa1 mapa3
+
+
+dir = [Der,Der,Izq]
+
+hayTesoro :: Mapa -> Bool
+hayTesoro (Fin c) = tieneTesoro c 
+hayTesoro (Bifurcacion c mi md ) = tieneTesoro c || hayTesoro mi || hayTesoro md    
+
+tieneTesoro :: Cofre -> Bool
+tieneTesoro (Cofre os ) = elObjetoTieneTesoro os 
+
+elObjetoTieneTesoro :: [Objeto] -> Bool
+elObjetoTieneTesoro [] = False 
+elObjetoTieneTesoro (o:os) = esTesoro o || elObjetoTieneTesoro os
+
+esTesoro :: Objeto -> Bool
+esTesoro  Tesoro = True
+esTesoro   _     = False
+
+hayTesoroEn :: [Dir] -> Mapa -> Bool
+hayTesoroEn [] (Bifurcacion c mi md ) = False
+hayTesoroEn _ (Fin c) = tieneTesoro c 
+hayTesoroEn (d:ds) (Bifurcacion c mi md) = if (esIzquierda d) 
+                                        then  hayTesoroEn ds mi
+                                        else hayTesoroEn ds md 
+
+esIzquierda :: Dir -> Bool
+esIzquierda  Izq = True
+esIzquierda   _ = False 
