@@ -49,4 +49,15 @@ duplicarAceitunas (Capa i p) = if esAceituna i
                               else Capa i(duplicarAceitunas p)
 
 esAceituna :: Ingrediente -> Bool
-esAceituna Aceitunas Int = True 
+esAceituna (Aceitunas n) = True 
+esAceituna   _           = False
+
+longitud :: [a] -> Int
+longitud [] = 0 
+longitud (n:ns) = 1 + longitud ns
+
+
+cantCapasPorPizza :: [Pizza] -> [(Int, Pizza)]
+cantCapasPorPizza  []     = []
+cantCapasPorPizza  (p:ps) =  (cantidadDeCapas p,p) : cantCapasPorPizza ps
+                                               -- devuelvo el int y la pizza
