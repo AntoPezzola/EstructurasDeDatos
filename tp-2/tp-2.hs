@@ -156,31 +156,24 @@ cantPokemonsDeTipo :: TipoDePokemon -> [Pokemon] -> Int
 cantPokemonsDeTipo t [] = 0
 cantPokemonsDeTipo t (p:ps)  = unoSi (sonDelMismoTipo t (tipoDePokemon p)) + cantPokemonsDeTipo t ps
                              
-unoSi :: Bool -> Int
-unoSi True  = 1
-unoSi False = 0
--- unoSi b = if b then 1 else 0
-
 superaA :: Pokemon -> Pokemon -> Bool
 superaA (ConsPokemon Agua _)  (ConsPokemon Fuego _) = True
 superaA (ConsPokemon Fuego _)  (ConsPokemon Planta _) = True
 superaA (ConsPokemon Planta _)  (ConsPokemon Agua _) = True
 superaA (ConsPokemon _ _)  (ConsPokemon _ _) = False
-
+{-
 losQueLeGanan :: TipoDePokemon -> Entrenador -> Entrenador -> Int
 losQueLeGanan t (ConsEntrenador _ []) (ConsEntrenador _ _) = 0 --cuando la lista de pokemones del primer entrenador llegue a estar vacía
 losQueLeGanan t (ConsEntrenador _ (pk1:pks1)) (ConsEntrenador _ pks2) = unoSi (leGanaATodos pk1 pks2)
                                                                      + losQueLeGanan (t (ConsEntrenador _ (pk1:pks1))
                                                                                        (ConsEntrenador _ pks2))
-    
-
+    -}
 leGanaATodos :: Pokemon -> [Pokemon] -> Bool
 leGanaATodos pk1 [] = True -- CASO BORDE 
 leGanaATodos pk1 (pk2:pks2) = (superaA pk1 pk2) -- el pokemon recibido le gana al primero de la lista
                               && (leGanaATodos pk1 pks2)
 
 esMaestroPokemon :: Entrenador -> Bool 
-esMaestroPokemon [] = False
 esMaestroPokemon  (ConsEntrenador _ pks) = hayUnPokemonDeTipo pks Agua && 
                                           hayUnPokemonDeTipo pks Planta && 
                                           hayUnPokemonDeTipo pks Fuego
@@ -189,3 +182,49 @@ hayUnPokemonDeTipo :: [Pokemon] -> TipoDePokemon -> Bool
 hayUnPokemonDeTipo [] _ = False
 hayUnPokemonDeTipo (pk:pks) tp =  sonDelMismoTipo (tipoDePokemon pk) tp || hayUnPokemonDeTipo pks tp  
                             -- sigo con la recursion porque mi primer pk no cumple la cond 
+
+data Seniority = Junior | SemiSenior | Senior
+    deriving Show
+data Proyecto = ConsProyecto String
+      deriving Show
+data Rol = Developer Seniority Proyecto | Management Seniority Proyecto
+      deriving Show
+data Empresa = ConsEmpresa [Rol]
+      deriving Show
+
+empresa1 = ConsEmpresa [Developer Junior (ConsProyecto "Linuz"), Management Senior (ConsProyecto "xp")] 
+empresa2 = ConsEmpresa [Management Senior (ConsProyecto "xp")]
+
+proyectos :: Empresa -> [Proyecto]
+proyectos (ConsEmpresa  r) = sinRepetidos (losProyectos r)
+
+losProyectos :: [Rol] -> [Proyecto]
+losProyectos [] = []
+losProyectos (r:rs)  = proyectoDeRol r : losProyectos rs
+
+proyectoDeRol :: Rol -> Proyecto 
+proyectoDeRol (Developer _ pro) = pro 
+proyectoDeRol (Management _ pro) = pro 
+
+
+sinRepetidos :: [Proyecto] -> [Proyecto]
+sinRepetidos  [] = []
+sinRepetidos (p:ps) = if elProyectoPertence p (sinRepetidos ps)
+                        then  sinRepetidos ps
+                        else p : sinRepetidos ps
+
+elProyectoPertence :: Proyecto -> [Proyecto] -> Bool
+elProyectoPertence  x []    = False
+elProyectoPertence x (p:ps) = esElMismoProyecto x p || elProyectoPertence x ps
+                              
+esElMismoProyecto :: Proyecto -> Proyecto -> Bool
+esElMismoProyecto (ConsProyecto p1) (ConsProyecto p2) = p1 == p2 
+
+{-Dada una empresa indica la cantidad de desarrolladores senior que posee, que pertecen
+además a los proyectos dados por parámetro-}
+losDevSenior :: Empresa -> [Proyecto] -> Int
+losDevSenior (ConsEmpresa  r) []     = ..
+losDevSenior (ConsEmpresa  r) (p:ps) = losQueSonDesarroladores r 
+
+
+
