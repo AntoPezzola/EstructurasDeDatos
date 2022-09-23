@@ -71,7 +71,7 @@ esTesoro _ = False
 
 pasosHastaTesoro :: Camino -> Int
 -- PRECOND: tiene que haber al menos un tesoro
-pasosHastaTesoro   fin           =  "error debe haber un tesoro"
+pasosHastaTesoro   fin           =  error "debe haber un tesoro"
 pasosHastaTesoro  (Cofre objs c) =  if hayTesoro c
                                     then 0
                                     else 1 + pasosHastaTesoro c
@@ -80,16 +80,16 @@ pasosHastaTesoro  (Nada c)       =  1 + pasosHastaTesoro c  -- no hay nada, sigo
 hayTesoroEn :: Int -> Camino -> Bool
 hayTesoroEn n fin = False
 hayTesoroEn n (Nada c) = hayTesoroEn (n-1) c 
-hayTesoroEn (Cofre objs c) = if tieneTesoro objs 
+hayTesoroEn n (Cofre objs c) = if tieneTesoro objs 
                              then n == 0
                              else hayTesoroEn (n-1) c  
 
 alMenosNTesoros :: Int -> Camino -> Bool
-alMenosNTesoros n fin          =  n <= 0
-alMenosNTesoros n (Nada c)     = alMenosNTesoros (n-1) c
-alMenosNTesoros (Cofre objs c) = if tieneTesoro objs 
+alMenosNTesoros n fin          =  False
+alMenosNTesoros n (Nada c)     = alMenosNTesoros n c
+alMenosNTesoros n (Cofre objs c) = if tieneTesoro objs 
                                  then alMenosNTesoros (n-1) c
-                                 else alMenosNTesoros n      -- si no tiene tesoro no va a restar, y si tiene le saco hasta que llegue
+                                 else alMenosNTesoros n c    -- si no tiene tesoro no va a restar, y si tiene le saco hasta que llegue
                                                                         -- en caso q cumpla 
 --- Tipos arbóreos ---
 
@@ -97,7 +97,7 @@ data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
             deriving Show
 
 
-arbol1 = NodeT 1 (NodeT 1 ) (NodeT 1) 
+arbol1 = NodeT 1 (NodeT 1 EmptyT EmptyT) (NodeT 1 EmptyT EmptyT) 
 
 sumarT :: Tree Int -> Int
 sumarT  EmptyT = 0
@@ -108,7 +108,7 @@ sizeT EmptyT = 0
 sizeT (NodeT a a1 a2) = 1 + sizeT a1 + sizeT a2
 
 aparicionesT :: Eq a => a -> Tree a -> Int
-aparicionesT EmptyT = 0
+aparicionesT x EmptyT = 0 
 aparicionesT x (NodeT a a1 a2) = if (x == a)
                                  then 1 + aparicionesT x a1 + aparicionesT x a2
                                  else aparicionesT x a1 + aparicionesT x a2
@@ -181,12 +181,11 @@ agregarElemento e (x:xs) = (e : x) : agregarElemento e xs
 
 
  -- data maybe = Just un elemento m da el tipo
-
- data ExpA = Valor Int  | Sum ExpA ExpA | Prod ExpA ExpA | Neg ExpA
+data ExpA = Valor Int  | Sum ExpA ExpA | Prod ExpA ExpA | Neg ExpA
                 deriving Show
 
 eval :: ExpA -> Int
-eval Valor n       = n
+eval (Valor n )      = n
 eval (Sum e2 e1 )  = (eval e2) + (eval e1)
 eval (Prod e1 e2 ) = (eval e1) * (eval e2)
 eval (Neg e1)      = - (eval e1)
