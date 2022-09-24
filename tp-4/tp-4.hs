@@ -278,6 +278,7 @@ cantidadDeAlimentoL (Cria _)                    = 0
 alimentoEn :: [Presa] -> Int
 alimentoEn ps = length ps 
 
+<<<<<<< HEAD
 
 losQueExploraron :: Territorio -> Manada -> [Nombre]
 -- PROP : dado un territorio y una manada, devuelve los nombres de los exploradores que pasaron por dicho territorio
