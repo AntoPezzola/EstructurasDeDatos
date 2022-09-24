@@ -234,7 +234,7 @@ apariciones :: Eq a => a -> [a] -> Int
 apariciones  a []  = 0 
 apariciones a (x:xs)  =  unoSi( a == x ) + apariciones a xs
 
--------------
+-----------------
 
 type Presa      = String -- nombre de presa
 type Territorio = String -- nombre de territorio
