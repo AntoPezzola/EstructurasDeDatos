@@ -144,9 +144,10 @@ toList EmptyT = []
 toList (NodeT a a1 a2) = (toList a1) ++ [a] ++ (toList a2) 
 
 levelN :: Int -> Tree a -> [a]
-levelN n EmptyT          = []
-levelN 0 (NodeT a a1 a2) = [a]
+levelN _ EmptyT          = []
+levelN 0 (NodeT a _   _) = [a]
 levelN n (NodeT a a1 a2) =  (levelN (n-1) a1) ++ (levelN (n-1) a2)
+                            -- rama a1           rama a2 
 
 listPerLevel :: Tree a -> [[a]]
 listPerLevel EmptyT = []
@@ -154,7 +155,7 @@ listPerLevel (NodeT a a1 a2) = [a] : unirNiveles (listPerLevel a1) (listPerLevel
 
 unirNiveles :: [[a]] -> [[a]] -> [[a]]
 unirNiveles [] xss = xss
-unirNiveles yss [] = yss
+unirNiveles yss [] = yss   -- una recu dentro de la otra
 unirNiveles (xs:xss) (ys:yss) = (xs ++ ys) : unirNiveles xss yss 
                         -- los elementos son listas, los uno 
 
@@ -174,6 +175,8 @@ todosLosCaminos EmptyT          = []
 todosLosCaminos (NodeT e EmptyT EmptyT) = [[e]]
 todosLosCaminos (NodeT e t1 t2) = (agregarElemento e (todosLosCaminos t1)) ++
                                          (agregarElemento e (todosLosCaminos t2))
+
+                                         
 
 agregarElemento :: a -> [[a]] ->[[a]]
 agregarElemento e [] = []
