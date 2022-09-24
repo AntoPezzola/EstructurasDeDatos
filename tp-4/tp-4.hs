@@ -62,11 +62,7 @@ cantCapasPorPizza  []     = []
 cantCapasPorPizza  (p:ps) =  (cantidadDeCapas p,p) : cantCapasPorPizza ps
                                                -- devuelvo el int y la pizza
                                                
-<<<<<<< HEAD
 data Dir = Izq | Der
-=======
- data Dir = Izq | Der
->>>>>>> 92c0aba27fdf34657369a12a2a78c0a1b00b1fd2
     deriving Show
 data Objeto = Tesoro | Chatarra
     deriving Show
@@ -118,13 +114,13 @@ hayTesoroEn (d:ds) (Bifurcacion c mi md) = if (esIzquierda d)
 esIzquierda :: Dir -> Bool
 esIzquierda  Izq = True
 esIzquierda   _ = False 
-<<<<<<< HEAD
 
 caminoAlTesoro :: Mapa -> [Dir]
 -- PRECOND : existe un tesoro y es único
-caminoAlTesoro (Fin c)               = [] 
-caminoAlTesoro (Bifurcacion c mi md) = 
-
+caminoAlTesoro (Fin c) = []    
+caminoAlTesoro (Bifurcacion c mi md) = if hayTesoro mi
+                                      then Izq : caminoAlTesoro mi
+                                       else Der : caminoAlTesoro md
 
 data Componente = LanzaTorpedos | Motor Int | Almacen [Barril]
     deriving Show
@@ -132,20 +128,34 @@ data Barril = Comida | Oxigeno | Torpedo | Combustible
         deriving Show
 data Sector = S SectorId [Componente] [Tripulante]
         deriving Show
-
 type SectorId = String
 type Tripulante = String
-
 data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
-
+        deriving Show
 data Nave = N (Tree Sector)
+        deriving Show
+
 --------------
+
+nave0 = N treesector0
+treesector0 = NodeT sector0 (NodeT sector1 EmptyT EmptyT) EmptyT
+sector0 = S "123" comp0 trip0
+comp0 = [LanzaTorpedos, (Motor 50), (Almacen [Comida, Oxigeno, Combustible]), LanzaTorpedos]
+trip0= ["a", "b", "c", "d"]
+
+sector1 = S "345" comp1 trip1
+comp1 = [(Motor 100), LanzaTorpedos]
+trip1 = ["w","e","q"]
+comp2 = [LanzaTorpedos, (Motor 150)]
+sect= ["345", "123"]
+
+---------
+
 sectores :: Nave -> [SectorId]
-sectores (n t) = losSectoresDe t 
-
-
+sectores (N t) = losSectoresDe t 
+  
 losSectoresDe :: Tree Sector  -> [SectorId]
-losSectoresDe EmptyT = 
+losSectoresDe EmptyT =  []
 losSectoresDe (NodeT s t1 t2) = idSector s : losSectoresDe t1 ++ losSectoresDe  t2
 
 idSector :: Sector -> SectorId
@@ -154,7 +164,7 @@ idSector (S id _ _ )  = id
 -----------
 
 poderDePropulsion :: Nave -> Int
-poderDePropulsion (n t) = propulsion t
+poderDePropulsion (N t) = propulsion t
 
 propulsion :: Tree Sector -> Int
 propulsion EmptyT = 0
@@ -164,8 +174,8 @@ compontnesSector :: Sector -> Int
 compontnesSector (S _ comp _ ) = compSectorTotal comp
 
 compSectorTotal :: [Componente] -> Int
-compSectorTotal [] = 
-compontnesSector (c:cs) = propulsionC c + compSectorTotal cs
+compSectorTotal [] = 0
+compSectorTotal (c:cs) = propulsionC c + compSectorTotal cs
 
 propulsionC :: Componente -> Int
 propulsionC (Motor n) = n 
@@ -174,7 +184,7 @@ propulsionC _         = 0
 
 barriles :: Nave -> [Barril]
 -- Prop: devuelve todos los barriles de la nave
-barriles (n t) = barrilesDeLaNave t
+barriles (N t) = barrilesDeLaNave t
 
 barrilesDeLaNave :: Tree Sector -> [Barril] 
 barrilesDeLaNave EmptyT = []
@@ -191,16 +201,21 @@ barrilesEnComponente :: Componente -> [Barril]
 barrilesEnComponente (Almacen bs) = bs
 
 -------------
-
+{-
 agregarASector :: [Componente] -> SectorId -> Nave -> Nave
+agregarASector cs s (N t) = naveConSectorAgregado cs s t
 
+naveConSectorAgregado :: [Componente] -> SectorId -> Tree Sector -> Nave
+naveConSectorAgregado cs s EmptyT = como devuelvo una nave?
+
+-} 
 -------------
 
 sectoresAsignados :: Tripulante -> Nave -> [SectorId]
-sectoresAsignados t (n tr) = losSectoresConTripulanteEnNave t tr
+sectoresAsignados t (N tr) = losSectoresConTripulanteEnNave t tr
 
-losSectoresConTripulanteEnNave :: Tripulante -> Sector -> [SectorId]
-losSectoresConTripulanteEnNave t EmptyT = []
+losSectoresConTripulanteEnNave :: Tripulante -> Tree Sector -> [SectorId]
+losSectoresConTripulanteEnNave t          EmptyT = []
 losSectoresConTripulanteEnNave t (NodeT s s1 s2) = if sectorConTripulante s t 
                               then idSector s : losSectoresConTripulanteEnNave t s1 ++ losSectoresConTripulanteEnNave t s2
                               else losSectoresConTripulanteEnNave t s1 ++ losSectoresConTripulanteEnNave t s2
@@ -212,12 +227,11 @@ estaElTripulante :: Tripulante -> [Tripulante] -> Bool
 estaElTripulante tri (t:ts) = esElMismoTripulante tri t || estaElTripulante tri ts
 
 esElMismoTripulante :: Tripulante -> Tripulante -> Bool
-esElMismoTripulante tri t = tri == t
-
+esElMismoTripulante t t1 = t == t1
 ------------
 
 tripulantes :: Nave -> [Tripulante]
-tripulantes (n t) = tripulantesSinRepetir(losTripulantesDeLaNave t)
+tripulantes (N t) = tripulantesSinRepetir(losTripulantesDeLaNave t)
 
 losTripulantesDeLaNave :: Tree Sector -> [Tripulante]
 losTripulantesDeLaNave EmptyT = []
@@ -227,20 +241,16 @@ losTripulantes :: Sector -> [Tripulante]
 losTripulantes  (S _ _ tripu ) = tripu
 
 tripulantesSinRepetir :: [Tripulante] -> [Tripulante]
-tripulantesSinRepetir []
+tripulantesSinRepetir []     = []
 tripulantesSinRepetir (t:ts) = if tripulanteRepetidos t ts 
                                then tripulantesSinRepetir ts
                                else t : tripulantesSinRepetir ts
 
-tripulanteRepetidos :: a -> [a] -> Bool
-tripulanteRepetidos y xs = apariciones y xs > 1
-
-apariciones :: Eq a => a -> [a] -> Int
-apariciones  a []  = 0 
-apariciones a (x:xs)  =  unoSi( a == x ) + apariciones a xs
+tripulanteRepetidos :: Tripulante -> [Tripulante] -> Bool
+tripulanteRepetidos y (x:xs) = esElMismoTripulante y x || tripulanteRepetidos y xs
 
 -----------------
-
+{-
 type Presa      = String -- nombre de presa
 type Territorio = String -- nombre de territorio
 type Nombre     = String -- nombre de lobo
@@ -267,6 +277,17 @@ cantidadDeAlimentoL (Cria _)                    = 0
 
 alimentoEn :: [Presa] -> Int
 alimentoEn ps = length ps 
----
-=======
->>>>>>> 92c0aba27fdf34657369a12a2a78c0a1b00b1fd2
+
+
+losQueExploraron :: Territorio -> Manada -> [Nombre]
+-- PROP : dado un territorio y una manada, devuelve los nombres de los exploradores que pasaron por dicho territorio
+losQueExploraron t (M l) = losExploradoresQuePasaronPorTerritorio t l 
+
+losExploradoresQuePasaronPorTerritorio :: Territorio -> Lobo -> [Nombre]
+losExploradoresQuePasaronPorTerritorio t (Cazador _ _ l1 l2 l3) = exploradores t l1 
+                                                                ++ exploradores t l2 
+                                                                ++ exploradores t l3
+losExploradoresQuePasaronPorTerritorio t (Explorador _ _ l1 l2 ) = exploradores t l1 ++ exploradores t l2
+losExploradoresQuePasaronPorTerritorio (Cria _) = []
+
+-}
