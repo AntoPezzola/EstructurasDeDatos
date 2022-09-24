@@ -62,7 +62,11 @@ cantCapasPorPizza  []     = []
 cantCapasPorPizza  (p:ps) =  (cantidadDeCapas p,p) : cantCapasPorPizza ps
                                                -- devuelvo el int y la pizza
                                                
+<<<<<<< HEAD
 data Dir = Izq | Der
+=======
+ data Dir = Izq | Der
+>>>>>>> 92c0aba27fdf34657369a12a2a78c0a1b00b1fd2
     deriving Show
 data Objeto = Tesoro | Chatarra
     deriving Show
@@ -114,6 +118,7 @@ hayTesoroEn (d:ds) (Bifurcacion c mi md) = if (esIzquierda d)
 esIzquierda :: Dir -> Bool
 esIzquierda  Izq = True
 esIzquierda   _ = False 
+<<<<<<< HEAD
 
 caminoAlTesoro :: Mapa -> [Dir]
 -- PRECOND : existe un tesoro y es único
@@ -261,4 +266,7 @@ cantidadDeAlimentoL (Explorador _ _ l1 l2)      = cantidadDeAlimentoL l1
 cantidadDeAlimentoL (Cria _)                    = 0
 
 alimentoEn :: [Presa] -> Int
-alimentoEn ps = length ps
+alimentoEn ps = length ps 
+---
+=======
+>>>>>>> 92c0aba27fdf34657369a12a2a78c0a1b00b1fd2
