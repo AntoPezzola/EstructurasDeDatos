@@ -267,6 +267,4 @@ cantidadDeAlimentoL (Cria _)                    = 0
 
 alimentoEn :: [Presa] -> Int
 alimentoEn ps = length ps 
----
-=======
->>>>>>> 92c0aba27fdf34657369a12a2a78c0a1b00b1fd2
+
