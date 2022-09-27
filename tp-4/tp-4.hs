@@ -149,6 +149,13 @@ unirNiveles [] oss = oss
 unirNiveles xss [] = xss 
 unirNiveles (xs:xss) (os:oss) = (xs ++ os) : unirNiveles xss oss   
 
+todosLosCaminos :: : Mapa -> [[Dir]]
+todosLosCaminos (Fin c) = []
+todosLosCaminos (Bifurcacion c mi md) = agregarDir Izq (todosLosCaminos mi) ++ agregarDir Der (todosLosCaminos md)
+
+agregarDir :: Dir -> [[Dir]] -> [[Dir]]
+agregarDir d [] = []
+agregarDir d (ds:dss) = (x:xs) : agregarDir d dss
 
 
 data Componente = LanzaTorpedos | Motor Int | Almacen [Barril]
