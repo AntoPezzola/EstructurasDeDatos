@@ -130,23 +130,24 @@ caminoDeLaRamaMasLarga :: Mapa -> [Dir]
 caminoDeLaRamaMasLarga (Fin c) =  []
 caminoDeLaRamaMasLarga (Bifurcacion c mi md) = if length (caminoDeLaRamaMasLarga mi) > length (caminoDeLaRamaMasLarga md)
                                                then Izq : caminoDeLaRamaMasLarga mi
-        
                                                else Der : caminoDeLaRamaMasLarga md 
 tesorosPorNivel :: Mapa -> [[Objeto]]
 tesorosPorNivel (Fin c) = []
-tesorosPorNivel (Bifurcacion c mi md) = if tieneTesoro c
-                                         then objetos c : losTesorosDelNivel (tesorosPorNivel mi) ++ -- duda 
-                                                    losTesorosDelNivel (tesorosPorNivel md) 
-                                         else losTesorosDelNivel (tesorosPorNivel mi) ++
-                                             losTesorosDelNivel (tesorosPorNivel md) 
-objetos :: Cofre -> [Objeto]
-objetos (Cofre objs) = objs
+tesorosPorNivel (Bifurcacion c mi md) = agregarTesorosA c ( unirNiveles (tesorosPorNivel mi) (tesorosPorNivel md))
 
-losTesorosDelNivel :: [[Objeto]] -> [[Objeto]] 
-losTesorosDelNivel []       = []
-losTesorosDelNivel (os:oss) = if elObjetoTieneTesoro os
-                             then os : losTesorosDelNivel oss
-                             else losTesorosDelNivel oss  
+angregarTesorosA :: Cofre -> [[Objeto]] -> [[Objeto]]
+angregarTesorosA (Cofre objs) os = losQueSonTesoros objs : os
+
+losQueSonTesoros :: [Objeto] -> [Objeto]
+losQueSonTesoros [] = []
+losQueSonTesoros (o:os) = if esTesoro o 
+                         then o : losQueSonTesoros os
+                         else losQueSonTesoros os  
+
+unirNiveles :: [[Objeto]] -> [[Objeto]] -> [[Objeto]]
+unirNiveles [] oss = oss 
+unirNiveles xss [] = xss 
+unirNiveles (xs:xss) (os:oss) = (xs ++ os) : unirNiveles xss oss   
 
 
 
