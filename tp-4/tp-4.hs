@@ -306,16 +306,23 @@ cantidadDeAlimentoL (Cria _)                    = 0
 
 alimentoEn :: [Presa] -> Int
 alimentoEn ps = length ps 
-
-losQueExploraron :: Territorio -> Manada -> [Nombre]
--- PROP : dado un territorio y una manada, devuelve los nombres de los exploradores que pasaron por dicho territorio
-losQueExploraron t (M l) = losExploradoresQuePasaronPorTerritorio t l 
+-}
 
 losExploradoresQuePasaronPorTerritorio :: Territorio -> Lobo -> [Nombre]
-losExploradoresQuePasaronPorTerritorio t (Cazador _ _ l1 l2 l3) = exploradores t l1 
-                                                                ++ exploradores t l2 
-                                                                ++ exploradores t l3
-losExploradoresQuePasaronPorTerritorio t (Explorador _ _ l1 l2 ) = exploradores t l1 ++ exploradores t l2
 losExploradoresQuePasaronPorTerritorio (Cria _) = []
+losExploradoresQuePasaronPorTerritorio t (Cazador _ _ l1 l2 l3) =  losExploradoresQuePasaronPorTerritorio t l1 ++
+                                                                   losExploradoresQuePasaronPorTerritorio t l2 ++ 
+                                                                   losExploradoresQuePasaronPorTerritorio t l3
+losExploradoresQuePasaronPorTerritorio t (Explorador n te l1 l2 ) = agregarNombreSiEstaElTerritorio t te n (losExploradoresQuePasaronPorTerritorio t l1 ++
+                                                                   losExploradoresQuePasaronPorTerritorio t l2)  
 
--}
+agregarNombreSiEstaElTerritorio :: Territorio -> [Territorio] -> Nombre -> [Nombre] -> [Nombre]
+agregarNombreSiEstaElTerritorio t ts n ns = if estaElTerritorio t ts
+                                            then n : ns 
+                                            else ns 
+
+estaElTerritorio :: Territorio -> [Territorio] -> Bool
+estaElTerritorio t [] = False 
+estaElTerritorio t (te:tes) =  t == te || estaElTerritorio t tes   
+
+
