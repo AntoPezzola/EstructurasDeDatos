@@ -45,12 +45,16 @@ esQuesoOSalsa _     = False
 duplicarAceitunas :: Pizza -> Pizza
 duplicarAceitunas   Prepizza = Prepizza
 duplicarAceitunas (Capa i p) = if esAceituna i
-                              then Capa i(Capa i (duplicarAceitunas p))
+                              then Capa (aceitunasDuplicadas i) (duplicarAceitunas  p)
                               else Capa i(duplicarAceitunas p)
+
+aceitunasDuplicadas :: Ingrediente -> Ingrediente
+aceitunasDuplicadas (Aceitunas n) = Aceitunas (n*2)
 
 esAceituna :: Ingrediente -> Bool
 esAceituna (Aceitunas n) = True 
 esAceituna   _           = False
+
 
 longitud :: [a] -> Int
 longitud [] = 0 
