@@ -122,6 +122,30 @@ caminoAlTesoro (Bifurcacion c mi md) = if hayTesoro mi
                                       then Izq : caminoAlTesoro mi
                                        else Der : caminoAlTesoro md
 
+caminoDeLaRamaMasLarga :: Mapa -> [Dir]  
+caminoDeLaRamaMasLarga (Fin c) =  []
+caminoDeLaRamaMasLarga (Bifurcacion c mi md) = if length (caminoDeLaRamaMasLarga mi) > length (caminoDeLaRamaMasLarga md)
+                                               then Izq : caminoDeLaRamaMasLarga mi
+        
+                                               else Der : caminoDeLaRamaMasLarga md 
+tesorosPorNivel :: Mapa -> [[Objeto]]
+tesorosPorNivel (Fin c) = []
+tesorosPorNivel (Bifurcacion c mi md) = if tieneTesoro c
+                                         then objetos c : losTesorosDelNivel (tesorosPorNivel mi) ++ -- duda 
+                                                    losTesorosDelNivel (tesorosPorNivel md) 
+                                         else losTesorosDelNivel (tesorosPorNivel mi) ++
+                                             losTesorosDelNivel (tesorosPorNivel md) 
+objetos :: Cofre -> [Objeto]
+objetos (Cofre objs) = objs
+
+losTesorosDelNivel :: [[Objeto]] -> [[Objeto]] 
+losTesorosDelNivel []       = []
+losTesorosDelNivel (os:oss) = if elObjetoTieneTesoro os
+                             then os : losTesorosDelNivel oss
+                             else losTesorosDelNivel oss  
+
+
+
 data Componente = LanzaTorpedos | Motor Int | Almacen [Barril]
     deriving Show
 data Barril = Comida | Oxigeno | Torpedo | Combustible
