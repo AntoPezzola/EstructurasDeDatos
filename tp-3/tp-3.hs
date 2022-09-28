@@ -192,3 +192,25 @@ eval (Valor n )      = n
 eval (Sum e2 e1 )  = (eval e2) + (eval e1)
 eval (Prod e1 e2 ) = (eval e1) * (eval e2)
 eval (Neg e1)      = - (eval e1)
+
+simplificar :: ExpA -> ExpA
+simplificar (Valor n) = Valor n
+simplificar (Sum e1 e2) = sumaSimplificada (simplificar e1) (simplificar e2)
+simplificar (Prod e1 e2) = prodSimplificada (simplificar e1) (simplificar e2)
+simplificar (Neg e) = negSimpli (simplificar e)
+
+sumaSimplificada :: ExpA -> ExpA -> ExpA
+sumaSimplificada (Valor 0) e = e
+sumaSimplificada e (Valor 0) = e
+sumaSimplificada e1 e2 = Sum e1 e2
+
+prodSimplificada :: ExpA -> ExpA -> ExpA
+prodSimplificada (Valor 0) e = Valor 0
+prodSimplificada e (Valor 0) = Valor 0
+prodSimplificada (Valor 1) e = e
+prodSimplificada e (Valor 1) = e
+prodSimplificada e1 e2 = Prod e1 e2
+
+negSimpli :: ExpA -> ExpA
+negSimpli (Neg e) = e
+negSimpli e = Neg e
