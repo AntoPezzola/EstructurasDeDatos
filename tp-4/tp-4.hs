@@ -400,12 +400,3 @@ losExploradoresQuePasaronPorTerritorio t (Cazador _ _ l1 l2 l3) =  losExplorador
                                                                    losExploradoresQuePasaronPorTerritorio t l3
 losExploradoresQuePasaronPorTerritorio t (Explorador n te l1 l2 ) = agregarNombreSiEstaElTerritorio t te n (losExploradoresQuePasaronPorTerritorio t l1 ++
                                                                    losExploradoresQuePasaronPorTerritorio t l2)  
-
-agregarNombreSiEstaElTerritorio :: Territorio -> [Territorio] -> Nombre -> [Nombre] -> [Nombre]
-agregarNombreSiEstaElTerritorio t ts n ns = if estaElTerritorio t ts
-                                            then n : ns 
-                                            else ns 
-
-estaElTerritorio :: Territorio -> [Territorio] -> Bool
-estaElTerritorio t [] = False 
-estaElTerritorio t (te:tes) =  t == te || estaElTerritorio t tes   
