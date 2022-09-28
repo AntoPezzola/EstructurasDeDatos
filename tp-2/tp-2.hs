@@ -192,7 +192,7 @@ data Rol = Developer Seniority Proyecto | Management Seniority Proyecto
 data Empresa = ConsEmpresa [Rol]
       deriving Show
 
-empresa1 = ConsEmpresa [Developer Junior (ConsProyecto "Linuz"), Management Senior (ConsProyecto "xp")] 
+empresa1 = ConsEmpresa [Developer Junior (ConsProyecto "Linuz"), Management Senior (ConsProyecto "xp") , Management Senior (ConsProyecto "xp")] 
 empresa2 = ConsEmpresa [Management Senior (ConsProyecto "xp")]
 
 proyectos :: Empresa -> [Proyecto]
@@ -222,9 +222,39 @@ esElMismoProyecto (ConsProyecto p1) (ConsProyecto p2) = p1 == p2
 
 {-Dada una empresa indica la cantidad de desarrolladores senior que posee, que pertecen
 además a los proyectos dados por parámetro-}
-losDevSenior :: Empresa -> [Proyecto] -> Int
-losDevSenior (ConsEmpresa  r) []     = ..
-losDevSenior (ConsEmpresa  r) (p:ps) = losQueSonDesarroladores r 
+losDevsSenior :: Empresa -> [Proyecto] -> Int
+losDevsSenior (ConsEmpresa r) pro = losDesarroladoresEnEmpresa r pro
+
+losDesarroladoresEnEmpresa :: [Rol] -> [Proyecto] -> Int
+losDesarroladoresEnEmpresa [] _ = 0
+losDesarroladoresEnEmpresa (r:rs) pro = losDesarroladoresConProyecto r pro + losDesarroladoresEnEmpresa rs pro
+
+losDesarroladoresConProyecto :: Rol -> [Proyecto] -> Int
+losDesarroladoresConProyecto (Developer _ p) pro = unoSi(tieneElElemento p pro)
+losDesarroladoresConProyecto (Management _ p)  pro = unoSi(tieneElElemento p pro)
+
+tieneElElemento :: Proyecto -> [Proyecto] -> Bool
+tieneElElemento  _ []  = False
+tieneElElemento pro1 (p:ps) = esELProyecto pro1 p || tieneElElemento pro1 ps 
+
+esELProyecto :: Proyecto -> Proyecto -> Bool
+esELProyecto  (ConsProyecto p1) (ConsProyecto p2) = p1 == p2 
+
+cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
+-- Indica la cantidad de empleados que trabajan en alguno de los proyectos dados
+cantQueTrabajanEn pro1 (ConsEmpresa r) = cantQueTrabajanEnP pro1 r 
+
+cantQueTrabajanEnP :: [Proyecto] -> [Rol] -> Int
+cantQueTrabajanEnP _ [] = 0
+cantQueTrabajanEnP (p:ps) r = unoSi(participaEnELProyecto p r) + cantQueTrabajanEnP  ps r 
+
+participaEnELProyecto :: Proyecto -> [Rol] -> Bool
+participaEnELProyecto _ [] = False
+participaEnELProyecto p (r:rs) = tieneElProyecto p r || participaEnELProyecto p rs 
+
+tieneElProyecto :: Proyecto -> Rol -> Bool
+tieneElProyecto p (Developer _ pro) = esELProyecto p pro
+tieneElProyecto p (Management _ pro) = esELProyecto p pro
 
 
 
