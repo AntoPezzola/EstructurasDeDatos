@@ -14,12 +14,13 @@ setToList :: Eq a => Set a -> [a]
 
 
 emptyS         = S []
-addS    x (S xs)      = S (x:xs) 
-belongs x (S xs)      = pertenece x xs 
-sizeS     (S xs)      = cantidadDeDistintos xs 
-removeS x (S xs)      = S (sinElElemento x xs) 
-unionS  (S xs) (S ys) = S(xs ++ ys) 
-setToList (S xs)      = losElementosSinRepetir xs 
+addS    x (S xs)      = S (x:xs)   --O(1)
+belongs x (S xs)      = pertenece x xs  -- O(1)
+-- sizeS     (S xs)      = cantidadDeDistintos xs 
+-- removeS x (S xs)      = S (sinElElemento x xs) 
+unionS  (S xs) (S ys) = S(xs ++ ys)  -- O(n)
+setToList (S xs)      = losElementosSinRepetir xs --O(n^2)   
+lenS        (S xs)    = lenght (losElementosSinRepetir xs) -- O(n^2)
 
 
 pertenece :: Eq a => a -> [a] -> Bool
