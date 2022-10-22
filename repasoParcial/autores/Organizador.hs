@@ -21,6 +21,16 @@ todosLosProgramas :: Organizador -> [Checksum]
 --O(C) en peor caso, donde C es la cantidad de códigos en el organizador.
 todosLosProgramas (MK0 cst pst) = domM(cst) -- por inv se que todos los cod que esten aca, estan en el otro map
 
+
+
+
+
+
+
+
+
+
+
 autoresDe :: Organizador -> Checksum -> Set Persona
 --Prop: denota el conjunto de autores que aparecen en un programa determinado.
 --Precon: el Checksum debe corresponder a un programa del organizador.
@@ -43,19 +53,21 @@ programaronJuntas :: Organizador -> Persona -> Persona -> Bool
 -- Eficiencia: O(log P + C log C) en peor caso, 
 --donde P es la cantidad de personas distintas que aparecen en todos los
 --programas del organizador, y C la cantidad total de programas.
-programaronJuntas (MK0 _ pst) p1 p2 = isEmpty(intersection (softwareDe p1 pst) (softwareDe p2 pst)) -- duda e inv.rep
+programaronJuntas (MK0 _ pst) p1 p2 = not (isEmpty(intersection (softwareDe p1 pst) (softwareDe p2 pst))) -- duda 
+
 
 softwareDe :: Persona -> Map k v -> Set Checksum
 softwareDe p mp = case lookupM p mp of 
                   Just ps -> ps 
                   Nothing -> emptyS 
+
+
+
+
                    
 nroProgramasDePersona :: Organizador -> Persona -> Int
 --Prop: dado un organizador y una persona, denota la cantidad de programas distintos en los que aparece.
 --O(log P) en peor caso, donde P es la cantidad de personas del organizador.
 nroProgramasDePersona (MK0 _ pst) p = case lookupM p pst of 
                                       Just pro -> sizeS(pro)
-                                      Nothing -> 0
-{- DUDAS 
-    el inv de representacion es el correcto 
-    como negar el isEmpty-}
+                                      Nothing -> 0 
