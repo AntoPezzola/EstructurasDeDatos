@@ -11,7 +11,9 @@ firstQ :: Queue a -> a
 dequeue :: Queue a -> Queue a
 
 emptyQ  = Q []
-isEmptyQ (Q qs) = estaVacia qs
+isEmptyQ (Q qs) = null qs
 enqueue x (Q qs) = queueConElementoEnCola x qs 
-firstQ (Q qs)  = 
-dequeue (Q qs) = 
+firstQ (Q qs)  = first qs 
+dequeue (Q qs) = sinElPrimero qs 
+
+
