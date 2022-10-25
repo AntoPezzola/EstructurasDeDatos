@@ -73,21 +73,24 @@ agregarSector :: SectorId -> Empresa -> Empresa
 -- Costo (log S) donde S es la cantidad total de claves
 agregarSector sid (ConsE ses ce) = ConsE ( (assocM sid emptyS ses) ce )
 
+agregarASector :: SectorId -> CUIL -> Empresa -> Empresa
+agregarASector sid c (ConsE ses ce) = let em = incorporarSector sid (consEmpleado c)
+  Cons (agregarEmpleado sid em ses ) (assocM c em ce)
 
-agregarEmpleado :: [SectorId] -> CUIL -> Empresa -> Empresa
-agregarEmpleado sids c (ConsE ses ce) = 
-                                ConsE (agregarEmpleadoALosSectores sids c ses ) (agregarSectoresAlEmpleado sids c ce)
-
-agregarEmpleadoALosSectores :: [SectorId] -> CUIL -> Map k v -> Map k v 
-agregarEmpleadoALosSectores [] e mp = mp
-agregarEmpleadoALosSectores (si:sis) e mp = agregarASector si e (agregarEmpleadoALosSectores sis e mp) 
+agregarEmpleado :: SectorId -> Empleado -> Map k v -> Map k v 
+agregarEmpleado s e mp = case lookupM mp s of 
+                        Just x -> addS e x  
+                        Nothing -> error "no existe el sector id dado"
 
 
-agregarASector :: SectorId -> CUIL -> Map k v -> Map k v 
-agregarASector s c mp = case lookupM mp c of 
-                        Just x -> assocM c (addS s x)
-                        Nothing -> error "no existe ese sector en la empresa"
+borrarEmpleado :: CUIL -> Empresa -> Empresa
+borrarEmpleado c (ConsE ses ce) = let em = formJust(lookupM ce c)
+                      ConsE (elSectorSinEmpleado (sectores em) em ses) (removeM c ce)
 
-agregarSectoresAlEmpleado :: [SectorId] -> CUIL -> Map k v -> Map k v 
-agregarSectoresAlEmpleado [] e mp = mp 
+elSectorSinEmpleado :: SectorId -> Empleado ->  Map k v -> Map k v 
+elSectorSinEmpleado sec e mp = case lookupM sec mp of
+                            Just x -> removeS e x
+                            Nothing -> error "no existe el sector id dado" 
 
+
+data Empresa = ConsE (Map SectorId (Set Empleado)) (Map CUIL Empleado)
